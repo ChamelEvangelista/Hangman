@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker"; // ✅ for dropdown
 import { useEffect, useState } from "react";
@@ -271,3 +272,36 @@ export default function App() {
   );
 }
 >>>>>>> 01f23ff (feat(player button): added PlayerDashboard)
+=======
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View } from 'react-native';
+
+export default function App() {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Welcome to Hangman Game App 🎮</Text>
+      <Text style={styles.subtitle}>React Native is ready!</Text>
+      <StatusBar style="auto" />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#282c34',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  title: {
+    color: '#61dafb',
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  subtitle: {
+    color: 'white',
+    fontSize: 16,
+  },
+});
+>>>>>>> 2410bad (Added App.js root file for Hangman App)
