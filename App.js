@@ -1,5 +1,6 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StatusBar } from "expo-status-bar";
+import { View, Text } from "react-native";
+import { styles } from "./GameScreenStyles"; // 👈 import your shared stylesheet
 
 export default function App() {
   return (
@@ -10,22 +11,3 @@ export default function App() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#282c34',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    color: '#61dafb',
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  subtitle: {
-    color: 'white',
-    fontSize: 16,
-  },
-});
