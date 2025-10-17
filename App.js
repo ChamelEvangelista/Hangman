@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker"; // ✅ for dropdown
 import { useEffect, useState } from "react";
@@ -257,3 +258,16 @@ const styles = StyleSheet.create({
   edit: { color: "#FFA500", marginHorizontal: 10, fontSize: 18 },
   delete: { color: "#FF4C4C", fontSize: 18 },
 });
+=======
+import React from "react";
+import { View } from "react-native";
+import PlayerButton from "./PlayerButton";
+
+export default function App() {
+  return (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <PlayerButton />
+    </View>
+  );
+}
+>>>>>>> 01f23ff (feat(player button): added PlayerDashboard)
