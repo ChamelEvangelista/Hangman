@@ -1,0 +1,30 @@
+import React, { useState } from 'react';
+import { View, Text } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+
+export default function App() {
+  const [word, setWord] = useState('');
+  const [difficulty, setDifficulty] = useState('Easy');
+  const [words, setWords] = useState({
+    Easy: ['Java'],
+    Medium: ['Python'],
+    Hard: ['React'],
+  });
+
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Choose Difficulty:</Text>
+      <Picker
+        selectedValue={difficulty}
+        style={{ height: 50, width: 150 }}
+        onValueChange={(itemValue) => setDifficulty(itemValue)}
+      >
+        <Picker.Item label="Easy" value="Easy" />
+        <Picker.Item label="Medium" value="Medium" />
+        <Picker.Item label="Hard" value="Hard" />
+      </Picker>
+
+      <Text>Word: {words[difficulty][0]}</Text>
+    </View>
+  );
+}
