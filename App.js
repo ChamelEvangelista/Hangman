@@ -1,22 +1,41 @@
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import React from "react";
-import { View } from "react-native";
-import PlayerButton from "./PlayerButton";
+import AdminScreen from "./screens/AdminScreen";
+import GameScreen from "./screens/GameScreen";
+import HangmanScreen from "./screens/HangmanScreen";
+import LoginScreen from "./screens/LoginScreen";
+import PlayerScreen from "./screens/PlayerScreen";
 
-export default function App() {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <PlayerButton />
-import { StatusBar } from "expo-status-bar";
-import { View, Text } from "react-native";
-import { styles } from "./GameScreenStyles"; // 👈 import your shared stylesheet
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Welcome to Hangman Game App 🎮</Text>
-      <Text style={styles.subtitle}>React Native is ready!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Login">
+        <Stack.Screen 
+          name="Login" 
+          component={LoginScreen} 
+          options={{ headerShown: false }} 
+        />
+
+        <Stack.Screen 
+          name="Admin" 
+          component={AdminScreen} 
+          options={{ title: 'Hangman — Admin' }} 
+
+        />
+        <Stack.Screen 
+          name="PlayerScreen"   // ✅ New Screen
+          component={PlayerScreen} 
+          options={{ title: 'Hangman — Player Dashboard' }} 
+        />
+
+        <Stack.Screen name="Game" component={GameScreen} />
+
+        <Stack.Screen name="Hangman" component={HangmanScreen} />
+
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
