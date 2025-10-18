@@ -26,7 +26,7 @@ export default function App() {
 
         />
         <Stack.Screen 
-          name="PlayerScreen"   // ✅ New Screen
+          name="PlayerScreen"
           component={PlayerScreen} 
           options={{ title: 'Hangman — Player Dashboard' }} 
         />
