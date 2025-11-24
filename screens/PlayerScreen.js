@@ -1,16 +1,16 @@
+// screens/PlayerScreen.js
 import { useEffect, useRef, useState } from "react";
-
 import { Animated, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-
-
+import { useUser } from "../contexts/UserContext";
 
 export default function PlayerScreen({ navigation, route }) {
-  const { username } = route.params;
-
+  const { user } = useUser();
   const [playerStats, setPlayerStats] = useState({
     gamesPlayed: 0,
     wins: 0,
     losses: 0,
+    score: 0,
+    winRatio: 0,
   });
 
   // Animations
@@ -30,10 +30,20 @@ export default function PlayerScreen({ navigation, route }) {
         useNativeDriver: true,
       }),
     ]).start();
-  }, []);
 
+    // Load user stats
+    if (user) {
+      setPlayerStats({
+        gamesPlayed: user.games_played || 0,
+        wins: user.games_won || 0,
+        losses: (user.games_played || 0) - (user.games_won || 0),
+        score: user.score || 0,
+        winRatio: user.games_played > 0 ? ((user.games_won || 0) / user.games_played * 100).toFixed(1) : 0,
+      });
+    }
+  }, [user]);
 
-const Button = ({ title, color, onPress }) =>(
+  const Button = ({ title, color, onPress }) => (
     <TouchableOpacity
       onPress={onPress}
       activeOpacity={0.8}
@@ -43,19 +53,21 @@ const Button = ({ title, color, onPress }) =>(
     </TouchableOpacity>
   );
 
-return (
-<Animated.View
+  return (
+    <Animated.View
       style={[
         styles.container,
         { opacity: fadeAnim, transform: [{ scale: scaleAnim }] },
       ]}
     >
-      <Text style={styles.title}>Welcome, {username}!</Text>
+      <Text style={styles.title}>Welcome, {user?.username}!</Text>
 
       <View style={styles.statsBox}>
-        <Text style={styles.stat}>Games Played: {playerStats.gamesPlayed}</Text>
-        <Text style={styles.stat}>Wins: {playerStats.wins}</Text>
-        <Text style={styles.stat}>Losses: {playerStats.losses}</Text>
+        <Text style={styles.stat}>Total Score: <Text style={styles.statValue}>{playerStats.score}</Text></Text>
+        <Text style={styles.stat}>Games Played: <Text style={styles.statValue}>{playerStats.gamesPlayed}</Text></Text>
+        <Text style={styles.stat}>Wins: <Text style={styles.statValue}>{playerStats.wins}</Text></Text>
+        <Text style={styles.stat}>Losses: <Text style={styles.statValue}>{playerStats.losses}</Text></Text>
+        <Text style={styles.stat}>Win Ratio: <Text style={styles.statValue}>{playerStats.winRatio}%</Text></Text>
       </View>
 
       <View style={styles.buttonContainer}>
@@ -65,9 +77,9 @@ return (
           onPress={() => navigation.navigate("Game")}
         />
         <Button
-          title="View Game History"
+          title="View Leaderboard"
           color="#10b981"
-          onPress={() => navigation.navigate("HistoryScreen")}
+          onPress={() => navigation.navigate("Leaderboard")}
         />
         <Button
           title="Logout"
@@ -82,7 +94,7 @@ return (
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0f172a", // dark navy
+    backgroundColor: "#0f172a",
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
@@ -91,21 +103,27 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "bold",
     marginBottom: 20,
-    color: "#facc15", // yellow
+    color: "#facc15",
   },
   statsBox: {
     marginBottom: 30,
     padding: 20,
     borderRadius: 12,
-    backgroundColor: "#334056ff", // slate gray
+    backgroundColor: "#334056ff",
     elevation: 5,
     width: "85%",
     alignItems: "center",
   },
   stat: {
     fontSize: 18,
-    color: "#e2e8f0", // light gray
-    marginBottom: 6,
+    color: "#e2e8f0",
+    marginBottom: 8,
+    width: '100%',
+    textAlign: 'center',
+  },
+  statValue: {
+    fontWeight: 'bold',
+    color: '#f59e0b',
   },
   buttonContainer: {
     width: "85%",
