@@ -103,7 +103,12 @@ export default function LoginScreen({ navigation }) {
         if (result.user.role === 'admin') {
           navigation.replace('Admin');
         } else {
-          navigation.replace('Game');
+          // Redirect back to login page instead of Game screen
+          // Show success message and reset form
+          setEmail('');
+          setPassword('');
+          setError('Registration successful! Please log in.');
+          setIsRegister(false);
         }
       } else {
         setError(result.error);
@@ -133,7 +138,7 @@ export default function LoginScreen({ navigation }) {
         {isRegister && (
           <TextInput
             placeholder="Username"
-            placeholderTextColor="#9aa4b2"
+            placeholderTextColor="#999999"
             value={username}
             onChangeText={setUsername}
             style={styles.input}
@@ -147,7 +152,7 @@ export default function LoginScreen({ navigation }) {
           onChangeText={setEmail}
           keyboardType="email-address"
           autoCapitalize="none"
-          placeholderTextColor="#9aa4b2"
+          placeholderTextColor="#999999"
           style={styles.input}
         />
 
@@ -157,7 +162,7 @@ export default function LoginScreen({ navigation }) {
             placeholder="Password"
             value={password}
             onChangeText={setPassword}
-            placeholderTextColor="#9aa4b2"
+            placeholderTextColor="#999999"
             secureTextEntry={!showPassword}
             style={[styles.input, { flex: 1, marginBottom: 0, borderWidth: 0 }]}
             autoCapitalize="none"
@@ -169,21 +174,27 @@ export default function LoginScreen({ navigation }) {
           </TouchableOpacity>
         </View>
 
-        <View style={styles.roleRow}>
-          <TouchableOpacity
-            style={[styles.roleBtn, role === 'player' && styles.roleBtnActive]}
-            onPress={() => setRole('player')}
-          >
-            <Text style={role === 'player' ? styles.roleTextActive : styles.roleText}>Player</Text>
-          </TouchableOpacity>
+        {/* Role selection only visible during registration */}
+        {isRegister && (
+          <View style={styles.roleRow}>
+            <Text style={styles.roleLabel}>Account Type:</Text>
+            <View style={styles.roleButtons}>
+              <TouchableOpacity
+                style={[styles.roleBtn, role === 'player' && styles.roleBtnActive]}
+                onPress={() => setRole('player')}
+              >
+                <Text style={role === 'player' ? styles.roleTextActive : styles.roleText}>Player</Text>
+              </TouchableOpacity>
 
-          <TouchableOpacity
-            style={[styles.roleBtn, role === 'admin' && styles.roleBtnActiveAdmin]}
-            onPress={() => setRole('admin')}
-          >
-            <Text style={role === 'admin' ? styles.roleTextActiveAdmin : styles.roleText}>Admin</Text>
-          </TouchableOpacity>
-        </View>
+              <TouchableOpacity
+                style={[styles.roleBtn, role === 'admin' && styles.roleBtnActiveAdmin]}
+                onPress={() => setRole('admin')}
+              >
+                <Text style={role === 'admin' ? styles.roleTextActiveAdmin : styles.roleText}>Admin</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
 
         {error ? <Text style={styles.error}>{error}</Text> : null}
 
@@ -194,7 +205,7 @@ export default function LoginScreen({ navigation }) {
         <TouchableOpacity onPress={() => setIsRegister(!isRegister)}>
           <Text style={styles.signupText}>
             {isRegister ? "Already have an account? " : "Don't have an account? "}
-            <Text style={{ fontWeight: '700', color: '#F59E0B' }}>
+            <Text style={{ fontWeight: '700', color: '#584738' }}>
               {isRegister ? "Log In" : "Sign Up"}
             </Text>
           </Text>
@@ -207,24 +218,160 @@ export default function LoginScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0B1E47', alignItems: 'center', justifyContent: 'center', padding: 20 },
-  logoWrap: { marginBottom: 24, alignItems: 'center' },
-  logo: { fontSize: 36, fontWeight: '700', color: '#14B8A6', letterSpacing: 2, textShadowColor: '#000000', textShadowOffset: { width: 2, height:2 }, textShadowRadius: 6 },
-  subtitle: { color: '#9aa4b2', marginTop: 6},
-  form: { width: '100%', backgroundColor: '#1E3A8A', padding: 18, borderRadius: 12, shadowColor: '#000' },
-  input: { backgroundColor: '#2C2C34', padding: 12, borderRadius: 8, color: '#fff', marginBottom: 12, borderWidth: 1, borderColor: '#14B8A6' },
-  passwordContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#2C2C34', borderRadius: 8, borderWidth: 1, borderColor: '#14B8A6', marginBottom: 12, paddingRight: 10 },
-  toggleText: { color: '#fff', fontSize: 18, paddingHorizontal: 6 },
-  roleRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 },
-  roleBtn: { flex: 1, padding: 10, borderRadius: 8, alignItems: 'center', marginHorizontal: 6, borderWidth: 1, borderColor: '#1f2937' },
-  roleBtnActive: { backgroundColor: '#10B981', borderColor: '#065f46' },
-  roleTextActive: { color: '#fff', fontWeight: '600', letterSpacing: 1  },
-  roleBtnActiveAdmin: { backgroundColor: '#3B82F6', borderColor: '#1D4ED8' },
-  roleTextActiveAdmin: { color: '#fff', fontWeight: '600', letterSpacing: 1 },
-  roleText: { color: '#cbd5e1' },
-  button: { marginTop: 6, backgroundColor: '#F59E0B', padding: 12, borderRadius: 10, alignItems: 'center' },
-  buttonText: { color: '#fff', fontWeight: '600' },
-  error: { color: '#fd5151ff', marginBottom: 6, textAlign: 'center', fontWeight: 600 },
-  signupText: { marginTop: 14, color: '#D1D5DB', textAlign: 'center' },
-  hint: { marginTop: 10, color: '#D1D5DB', fontSize: 12, textAlign: 'center' },
+  container: { 
+    flex: 1, 
+    backgroundColor: '#F1EADA', 
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    padding: 20 
+  },
+  logoWrap: { 
+    marginBottom: 24, 
+    alignItems: 'center' 
+  },
+  logo: { 
+    fontSize: 36, 
+    fontWeight: '700', 
+    color: '#3D1F12', 
+    letterSpacing: 2, 
+    textShadowColor: 'rgba(0, 0, 0, 0.1)', 
+    textShadowOffset: { width: 1, height: 1 }, 
+    textShadowRadius: 3 
+  },
+  subtitle: { 
+    color: '#98755B', 
+    marginTop: 6,
+    fontSize: 14,
+  },
+  form: { 
+    width: '100%', 
+    backgroundColor: '#FFFFFF', 
+    padding: 20, 
+    borderRadius: 12, 
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  input: { 
+    backgroundColor: '#FFFFFF', 
+    padding: 12, 
+    borderRadius: 8, 
+    color: '#3D1F12', 
+    marginBottom: 12, 
+    borderWidth: 1, 
+    borderColor: '#98755B',
+    fontSize: 16,
+  },
+  passwordContainer: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    backgroundColor: '#FFFFFF', 
+    borderRadius: 8, 
+    borderWidth: 1, 
+    borderColor: '#98755B', 
+    marginBottom: 12, 
+    paddingRight: 10 
+  },
+  toggleText: { 
+    color: '#584738', 
+    fontSize: 18, 
+    paddingHorizontal: 6 
+  },
+  roleRow: { 
+    flexDirection: 'row', 
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  roleLabel: {
+    color: '#584738',
+    fontSize: 14,
+    fontWeight: '500',
+    flex: 1,
+  },
+  roleButtons: {
+    flexDirection: 'row',
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  roleBtn: { 
+    paddingHorizontal: 16,
+    paddingVertical: 8, 
+    borderRadius: 8, 
+    alignItems: 'center', 
+    marginLeft: 8,
+    borderWidth: 1, 
+    borderColor: '#98755B',
+    minWidth: 80,
+  },
+  roleBtnActive: { 
+    backgroundColor: '#584738', 
+    borderColor: '#3D1F12' 
+  },
+  roleTextActive: { 
+    color: '#FFFFFF', 
+    fontWeight: '600', 
+    fontSize: 12,
+  },
+  roleBtnActiveAdmin: { 
+    backgroundColor: '#584738', 
+    borderColor: '#3D1F12' 
+  },
+  roleTextActiveAdmin: { 
+    color: '#FFFFFF', 
+    fontWeight: '600', 
+    fontSize: 12,
+  },
+  roleText: { 
+    color: '#584738',
+    fontSize: 12,
+  },
+  button: { 
+    marginTop: 6, 
+    backgroundColor: '#584738', 
+    padding: 14, 
+    borderRadius: 8, 
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  buttonText: { 
+    color: '#FFFFFF', 
+    fontWeight: '600',
+    fontSize: 16,
+    letterSpacing: 0.5,
+  },
+  error: { 
+    color: '#A52A2A', 
+    marginBottom: 12, 
+    textAlign: 'center', 
+    fontWeight: '500',
+    backgroundColor: '#F8F4F0',
+    padding: 8,
+    borderRadius: 6,
+    fontSize: 14,
+  },
+  signupText: { 
+    marginTop: 16, 
+    color: '#98755B', 
+    textAlign: 'center',
+    fontSize: 14,
+  },
+  hint: { 
+    marginTop: 12, 
+    color: '#98755B', 
+    fontSize: 12, 
+    textAlign: 'center' 
+  },
 });

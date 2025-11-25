@@ -1,6 +1,14 @@
 // screens/GameScreen.js
 import { useEffect, useRef, useState } from "react";
-import { Animated, Pressable, StyleSheet, Text, Alert } from "react-native";
+import { 
+  Animated, 
+  Pressable, 
+  StyleSheet, 
+  Text, 
+  Alert, 
+  View, 
+  TouchableOpacity 
+} from "react-native";
 import { WordService } from "../services/DatabaseService";
 import { useUser } from "../contexts/UserContext";
 
@@ -67,15 +75,13 @@ export default function GameScreen({ navigation }) {
       <Pressable
         onPress={onPress}
         disabled={disabled}
-        style={({ hovered, pressed }) => [
+        style={({ pressed }) => [
           styles.button,
           {
             backgroundColor: disabled 
               ? '#666' 
               : pressed
               ? colors.pressed
-              : hovered
-              ? colors.hovered
               : colors.default,
             transform: [{ scale: pressed ? 0.95 : 1 }],
             opacity: disabled ? 0.6 : 1,
@@ -97,19 +103,19 @@ export default function GameScreen({ navigation }) {
       <DifficultyButton
         title="Easy"
         disabled={loading}
-        colors={{ default: "#4CAF50", hovered: "#135a16ff", pressed: "#388E3C" }}
+        colors={{ default: "#4CAF50", pressed: "#388E3C" }}
         onPress={() => handleSelectDifficulty("Easy")}
       />
       <DifficultyButton
         title="Medium"
         disabled={loading}
-        colors={{ default: "#FFC107", hovered: "#786118ff", pressed: "#FFA000" }}
+        colors={{ default: "#FFC107", pressed: "#FFA000" }}
         onPress={() => handleSelectDifficulty("Medium")}
       />
       <DifficultyButton
         title="Hard"
         disabled={loading}
-        colors={{ default: "#F44336", hovered: "#630f0fff", pressed: "#D32F2F" }}
+        colors={{ default: "#F44336", pressed: "#D32F2F" }}
         onPress={() => handleSelectDifficulty("Hard")}
       />
 
