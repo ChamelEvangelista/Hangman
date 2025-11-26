@@ -23,8 +23,15 @@ const ChatScreen = ({ route, navigation }) => {
   const [sending, setSending] = useState(false);
   const flatListRef = useRef(null);
 
-  // Get user from UserContext
-  const { user: currentUser } = useContext(UserContext);
+  // Safely get user from context with error handling
+  let currentUser = null;
+  try {
+    const context = useContext(UserContext);
+    currentUser = context?.user || null;
+  } catch (error) {
+    console.warn('UserContext not available:', error);
+    currentUser = null;
+  }
 
   useEffect(() => {
     navigation.setOptions({ title: userName });

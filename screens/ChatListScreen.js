@@ -19,15 +19,25 @@ const ChatListScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   
-  // Get user from UserContext
-  const { user: currentUser } = useContext(UserContext);
+  // Safely get user from context with error handling
+  let currentUser = null;
+  try {
+    const context = useContext(UserContext);
+    currentUser = context?.user || null;
+  } catch (error) {
+    console.warn('UserContext not available:', error);
+    currentUser = null;
+  }
 
   const fetchConversations = async () => {
     try {
       setLoading(true);
-      if (currentUser) {
+      if (currentUser && currentUser.id) {
         const recentConversations = await ChatService.getRecentConversations(currentUser.id);
         setConversations(recentConversations);
+      } else {
+        // If no user is logged in, show empty state
+        setConversations([]);
       }
     } catch (error) {
       console.error('Error fetching conversations:', error);
@@ -39,9 +49,7 @@ const ChatListScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    if (currentUser) {
-      fetchConversations();
-    }
+    fetchConversations();
   }, [currentUser]);
 
   const onRefresh = () => {
@@ -54,6 +62,8 @@ const ChatListScreen = ({ navigation }) => {
   );
 
   const startChat = (conversation) => {
+    if (!currentUser) return;
+    
     navigation.navigate('Chat', { 
       chatId: `chat_${currentUser.id}_${conversation.userId}`,
       userName: conversation.userName,
@@ -124,7 +134,7 @@ const ChatListScreen = ({ navigation }) => {
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Messages</Text>
         <Text style={styles.welcomeText}>
-          {currentUser ? `Hello, ${currentUser.username}` : 'Select a player to chat'}
+          {currentUser ? `Hello, ${currentUser.username}` : 'Please log in to chat'}
         </Text>
       </View>
       
@@ -138,7 +148,14 @@ const ChatListScreen = ({ navigation }) => {
         />
       </View>
 
-      {filteredConversations.length === 0 ? (
+      {!currentUser ? (
+        <View style={styles.emptyState}>
+          <Text style={styles.emptyStateTitle}>Please Log In</Text>
+          <Text style={styles.emptyStateText}>
+            You need to be logged in to use the chat feature.
+          </Text>
+        </View>
+      ) : filteredConversations.length === 0 ? (
         <View style={styles.emptyState}>
           <Text style={styles.emptyStateTitle}>
             {searchQuery ? 'No Conversations Found' : 'No Conversations'}
