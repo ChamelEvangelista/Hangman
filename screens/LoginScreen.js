@@ -91,24 +91,27 @@ export default function LoginScreen({ navigation }) {
       let result;
 
       if (isRegister) {
-        // Register mode
-        result = await register(email, username, password, role);
+        // Register mode - always register as player
+        result = await register(email, username, password, 'player');
       } else {
-        // Login mode
-        result = await login(email, password);
+        // Login mode - use selected role for authentication
+        result = await login(email, password, role);
       }
 
       if (result.success) {
-        // Navigate based on role
-        if (result.user.role === 'admin') {
-          navigation.replace('Admin');
-        } else {
-          // Redirect back to login page instead of Game screen
-          // Show success message and reset form
+        if (isRegister) {
+          // After successful registration, show success message and switch to login
           setEmail('');
           setPassword('');
           setError('Registration successful! Please log in.');
           setIsRegister(false);
+        } else {
+          // After successful login, navigate to appropriate screen based on user's actual role
+          if (result.user.role === 'admin') {
+            navigation.replace('Admin');
+          } else {
+            navigation.replace('Game');
+          }
         }
       } else {
         setError(result.error);
@@ -120,6 +123,10 @@ export default function LoginScreen({ navigation }) {
     } finally {
       setLoading(false);
     }
+  };
+
+  const navigateToAbout = () => {
+    navigation.navigate('About');
   };
 
   return (
@@ -174,10 +181,10 @@ export default function LoginScreen({ navigation }) {
           </TouchableOpacity>
         </View>
 
-        {/* Role selection only visible during registration */}
-        {isRegister && (
+        {/* Role selection only visible during LOGIN (not during registration) */}
+        {!isRegister && (
           <View style={styles.roleRow}>
-            <Text style={styles.roleLabel}>Account Type:</Text>
+            <Text style={styles.roleLabel}>Login as:</Text>
             <View style={styles.roleButtons}>
               <TouchableOpacity
                 style={[styles.roleBtn, role === 'player' && styles.roleBtnActive]}
@@ -187,10 +194,10 @@ export default function LoginScreen({ navigation }) {
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={[styles.roleBtn, role === 'admin' && styles.roleBtnActiveAdmin]}
+                style={[styles.roleBtn, role === 'admin' && styles.roleBtnActive]}
                 onPress={() => setRole('admin')}
               >
-                <Text style={role === 'admin' ? styles.roleTextActiveAdmin : styles.roleText}>Admin</Text>
+                <Text style={role === 'admin' ? styles.roleTextActive : styles.roleText}>Admin</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -202,7 +209,11 @@ export default function LoginScreen({ navigation }) {
           {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>{isRegister ? "Sign Up" : "Log In"}</Text>}
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => setIsRegister(!isRegister)}>
+        <TouchableOpacity onPress={() => {
+          setIsRegister(!isRegister);
+          setError(''); // Clear error when switching modes
+          setRole('player'); // Reset to player role when switching
+        }}>
           <Text style={styles.signupText}>
             {isRegister ? "Already have an account? " : "Don't have an account? "}
             <Text style={{ fontWeight: '700', color: '#584738' }}>
@@ -211,7 +222,11 @@ export default function LoginScreen({ navigation }) {
           </Text>
         </TouchableOpacity>
 
-        <Text style={styles.hint}>Powered by SQLite Database</Text>
+        <TouchableOpacity style={styles.aboutButton} onPress={navigateToAbout}>
+          <Text style={styles.aboutButtonText}>About</Text>
+        </TouchableOpacity>
+
+        <Text style={styles.hint}>Developed by CTE</Text>
       </Animated.View>
     </KeyboardAvoidingView>
   );
@@ -318,15 +333,6 @@ const styles = StyleSheet.create({
     fontWeight: '600', 
     fontSize: 12,
   },
-  roleBtnActiveAdmin: { 
-    backgroundColor: '#584738', 
-    borderColor: '#3D1F12' 
-  },
-  roleTextActiveAdmin: { 
-    color: '#FFFFFF', 
-    fontWeight: '600', 
-    fontSize: 12,
-  },
   roleText: { 
     color: '#584738',
     fontSize: 12,
@@ -366,6 +372,20 @@ const styles = StyleSheet.create({
     marginTop: 16, 
     color: '#98755B', 
     textAlign: 'center',
+    fontSize: 14,
+  },
+  aboutButton: {
+    marginTop: 12,
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#98755B',
+    backgroundColor: 'transparent',
+  },
+  aboutButtonText: {
+    color: '#584738',
+    fontWeight: '600',
     fontSize: 14,
   },
   hint: { 

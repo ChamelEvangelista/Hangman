@@ -73,17 +73,17 @@ export default function PlayerScreen({ navigation, route }) {
       <View style={styles.buttonContainer}>
         <Button
           title="Start New Game"
-          color="#1f6feb"
+          color="#584738" // Mahogany
           onPress={() => navigation.navigate("Game")}
         />
         <Button
           title="View Leaderboard"
-          color="#10b981"
+          color="#98755B" // Light brown
           onPress={() => navigation.navigate("Leaderboard")}
         />
         <Button
           title="Logout"
-          color="#ef4444"
+          color="#A52A2A" // Complementary red
           onPress={() => navigation.replace("Login")}
         />
       </View>
@@ -94,7 +94,7 @@ export default function PlayerScreen({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0f172a",
+    backgroundColor: "#F1EADA", // Milk background
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
@@ -103,45 +103,60 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "bold",
     marginBottom: 20,
-    color: "#facc15",
+    color: "#3D1F12", // Espresso
+    textAlign: "center",
   },
   statsBox: {
     marginBottom: 30,
     padding: 20,
     borderRadius: 12,
-    backgroundColor: "#334056ff",
-    elevation: 5,
+    backgroundColor: "#FFFFFF", // White background
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
     width: "85%",
     alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#E8E2D9", // Light border
   },
   stat: {
     fontSize: 18,
-    color: "#e2e8f0",
+    color: "#584738", // Mahogany for regular text
     marginBottom: 8,
     width: '100%',
     textAlign: 'center',
+    fontWeight: '500',
   },
   statValue: {
     fontWeight: 'bold',
-    color: '#f59e0b',
+    color: '#3D1F12', // Espresso for values
   },
   buttonContainer: {
     width: "85%",
   },
   button: {
     padding: 15,
-    borderRadius: 10,
+    borderRadius: 8,
     alignItems: "center",
     marginBottom: 12,
     shadowColor: "#000",
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 3,
   },
   buttonText: {
-    color: "#fff",
+    color: "#FFFFFF",
     fontWeight: "600",
     fontSize: 16,
+    letterSpacing: 0.5,
   },
 });

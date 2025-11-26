@@ -13,6 +13,9 @@ import HangmanScreen from './screens/HangmanScreen';
 import AdminScreen from './screens/AdminScreen';
 import LeaderboardScreen from './screens/LeaderboardScreen';
 import PlayerScreen from './screens/PlayerScreen';
+import ChatListScreen from './screens/ChatListScreen';
+import ChatScreen from './screens/ChatScreen';
+import AboutScreen from './screens/AboutScreen';
 
 const Stack = createStackNavigator();
 
@@ -50,8 +53,8 @@ export default function App() {
         <Stack.Navigator 
           initialRouteName="Login"
           screenOptions={{
-            headerStyle: { backgroundColor: '#0f172a' },
-            headerTintColor: 'white',
+            headerStyle: { backgroundColor: '#340100' },
+            headerTintColor: '#e0d2b7',
             headerTitleStyle: { fontWeight: 'bold' },
           }}
         >
@@ -60,10 +63,17 @@ export default function App() {
             component={LoginScreen} 
             options={{ headerShown: false }} 
           />
+           <Stack.Screen 
+            name="About" 
+            component={AboutScreen} 
+            options={{ title: 'About' }} 
+          />
           <Stack.Screen 
             name="Game" 
             component={GameScreen} 
-            options={{ title: 'Select Difficulty' }} 
+            options={{ 
+              title: 'Select Difficulty',
+            }}
           />
           <Stack.Screen 
             name="Hangman" 
@@ -84,6 +94,16 @@ export default function App() {
             name="PlayerScreen" 
             component={PlayerScreen} 
             options={{ title: 'Player Dashboard' }} 
+          />
+          <Stack.Screen 
+            name="ChatList" 
+            component={ChatListScreen} 
+            options={{ title: 'Messages' }} 
+          />
+          <Stack.Screen 
+            name="Chat" 
+            component={ChatScreen} 
+            options={{ title: 'Chat' }} 
           />
         </Stack.Navigator>
       </NavigationContainer>

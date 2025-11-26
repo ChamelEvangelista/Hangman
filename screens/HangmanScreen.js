@@ -288,7 +288,7 @@ const HangmanScreen = ({ route, navigation }) => {
                 styles.progressFill,
                 { 
                   width: `${(wrongGuesses / maxWrongGuesses) * 100}%`,
-                  backgroundColor: wrongGuesses >= maxWrongGuesses - 2 ? '#EF4444' : '#F59E0B'
+                  backgroundColor: wrongGuesses >= maxWrongGuesses - 2 ? '#A52A2A' : '#98755B'
                 }
               ]} 
             />
@@ -363,7 +363,7 @@ const HangmanScreen = ({ route, navigation }) => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#007AFF" />
+        <ActivityIndicator size="large" color="#98755B" />
         <Text style={styles.loadingText}>Loading Game...</Text>
       </View>
     );
@@ -462,18 +462,18 @@ const HangmanScreen = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0f172a',
+    backgroundColor: "#3D1F12", // Dark espresso background
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#0f172a',
+    backgroundColor: "#3D1F12",
   },
   loadingText: {
     marginTop: 10,
     fontSize: 16,
-    color: '#cbd5e1',
+    color: '#98755B', // Light brown
   },
   scrollContainer: {
     flexGrow: 1,
@@ -490,7 +490,7 @@ const styles = StyleSheet.create({
   },
   backButtonText: {
     fontSize: 16,
-    color: '#60a5fa',
+    color: '#98755B', // Light brown
     fontWeight: '600',
   },
   headerCenter: {
@@ -502,23 +502,23 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#facc15',
+    color: '#F1EADA', // Milk color for title
     textAlign: 'center',
   },
   difficultyBadge: {
-    backgroundColor: '#3b82f6',
+    backgroundColor: '#584738', // Mahogany
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 12,
     marginTop: 4,
   },
   difficultyText: {
-    color: 'white',
+    color: '#F1EADA', // Milk color
     fontSize: 12,
     fontWeight: '600',
   },
   hangmanContainer: {
-    backgroundColor: '#1e293b',
+    backgroundColor: '#584738', // Mahogany
     padding: 20,
     borderRadius: 16,
     marginBottom: 24,
@@ -532,23 +532,23 @@ const styles = StyleSheet.create({
   hangmanTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#f59e0b',
+    color: '#F1EADA', // Milk color
     marginBottom: 16,
     letterSpacing: 2,
   },
   hangmanDrawingContainer: {
-    backgroundColor: '#0f172a',
+    backgroundColor: '#3D1F12', // Espresso
     padding: 20,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: '#334155',
+    borderColor: '#98755B', // Light brown border
     marginBottom: 16,
   },
   hangmanDrawing: {
     fontSize: 14,
     fontFamily: 'monospace',
     lineHeight: 18,
-    color: '#e2e8f0',
+    color: '#F1EADA', // Milk color
     textAlign: 'center',
   },
   hangmanProgress: {
@@ -557,28 +557,28 @@ const styles = StyleSheet.create({
   },
   progressText: {
     fontSize: 14,
-    color: '#cbd5e1',
+    color: '#F1EADA', // Milk color
     marginBottom: 8,
     fontWeight: '600',
   },
   progressBar: {
     width: '100%',
     height: 8,
-    backgroundColor: '#334155',
+    backgroundColor: '#3D1F12', // Espresso
     borderRadius: 4,
     overflow: 'hidden',
   },
   progressFill: {
     height: '100%',
     borderRadius: 4,
-    backgroundColor: '#f59e0b',
+    backgroundColor: '#98755B', // Light brown
   },
   wordContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
     marginBottom: 24,
-    backgroundColor: '#1e293b',
+    backgroundColor: '#584738', // Mahogany
     padding: 20,
     borderRadius: 16,
     elevation: 4,
@@ -594,7 +594,7 @@ const styles = StyleSheet.create({
   letter: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#f8fafc',
+    color: '#F1EADA', // Milk color
     marginBottom: 6,
     minWidth: 30,
     textAlign: 'center',
@@ -602,7 +602,7 @@ const styles = StyleSheet.create({
   underline: {
     width: 36,
     height: 3,
-    backgroundColor: '#f59e0b',
+    backgroundColor: '#98755B', // Light brown
     borderRadius: 2,
   },
   statusContainer: {
@@ -617,47 +617,47 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
   },
   winContainer: {
-    backgroundColor: '#065f46',
-    borderColor: '#047857',
+    backgroundColor: '#2D5012', // Dark green variant
+    borderColor: '#3A6618',
   },
   loseContainer: {
-    backgroundColor: '#7f1d1d',
-    borderColor: '#991b1b',
+    backgroundColor: '#7A1C1C', // Dark red variant
+    borderColor: '#992222',
   },
   winText: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#34d399',
+    color: '#98FB98', // Light green
     textAlign: 'center',
     marginBottom: 12,
   },
   loseText: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#fca5a5',
+    color: '#FFB6C1', // Light red
     textAlign: 'center',
     marginBottom: 12,
   },
   scoreText: {
     fontSize: 18,
-    color: '#d1fae5',
+    color: '#F1EADA', // Milk color
     fontWeight: '600',
     marginBottom: 8,
   },
   wordText: {
     fontSize: 16,
-    color: '#e2e8f0',
+    color: '#F1EADA', // Milk color
     textAlign: 'center',
     marginBottom: 8,
   },
   revealedWord: {
     fontWeight: 'bold',
-    color: '#fef3c7',
+    color: '#98755B', // Light brown
     fontSize: 18,
   },
   hintText: {
     fontSize: 14,
-    color: '#fecaca',
+    color: '#F1EADA', // Milk color
     fontStyle: 'italic',
   },
   statusButtons: {
@@ -665,19 +665,19 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   continueButton: {
-    backgroundColor: '#10b981',
+    backgroundColor: '#98755B', // Light brown
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 8,
   },
   continueButtonText: {
-    color: 'white',
+    color: '#3D1F12', // Espresso
     fontSize: 14,
     fontWeight: '600',
   },
   inputContainer: {
     marginBottom: 20,
-    backgroundColor: '#1e293b',
+    backgroundColor: '#584738', // Mahogany
     padding: 20,
     borderRadius: 16,
     elevation: 4,
@@ -688,7 +688,7 @@ const styles = StyleSheet.create({
   },
   inputLabel: {
     fontSize: 16,
-    color: '#cbd5e1',
+    color: '#F1EADA', // Milk color
     marginBottom: 12,
     fontWeight: '600',
     textAlign: 'center',
@@ -700,19 +700,19 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 2,
-    borderColor: '#f59e0b',
+    borderColor: '#98755B', // Light brown
     padding: 16,
     borderRadius: 12,
     fontSize: 20,
     width: 80,
     textAlign: 'center',
     marginRight: 12,
-    backgroundColor: '#0f172a',
-    color: '#f8fafc',
+    backgroundColor: '#3D1F12', // Espresso
+    color: '#F1EADA', // Milk color
     fontWeight: 'bold',
   },
   submitButton: {
-    backgroundColor: '#f59e0b',
+    backgroundColor: '#98755B', // Light brown
     paddingHorizontal: 24,
     paddingVertical: 16,
     borderRadius: 12,
@@ -723,7 +723,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   submitButtonText: {
-    color: '#1e293b',
+    color: '#3D1F12', // Espresso
     fontSize: 16,
     fontWeight: 'bold',
   },
@@ -732,7 +732,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'center',
     marginBottom: 20,
-    backgroundColor: '#1e293b',
+    backgroundColor: '#584738', // Mahogany
     padding: 16,
     borderRadius: 16,
     elevation: 4,
@@ -746,7 +746,7 @@ const styles = StyleSheet.create({
     height: 40,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#334155',
+    backgroundColor: '#3D1F12', // Espresso
     margin: 4,
     borderRadius: 8,
     elevation: 2,
@@ -758,19 +758,19 @@ const styles = StyleSheet.create({
   keyText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#e2e8f0',
+    color: '#F1EADA', // Milk color
   },
   correctKey: {
-    backgroundColor: '#10b981',
+    backgroundColor: '#2D5012', // Dark green
   },
   wrongKey: {
-    backgroundColor: '#ef4444',
+    backgroundColor: '#7A1C1C', // Dark red
   },
   correctKeyText: {
-    color: 'white',
+    color: '#98FB98', // Light green
   },
   wrongKeyText: {
-    color: 'white',
+    color: '#FFB6C1', // Light red
   },
   actionButtons: {
     flexDirection: 'row',
@@ -778,7 +778,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   restartButton: {
-    backgroundColor: '#f59e0b',
+    backgroundColor: '#98755B', // Light brown
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 12,
@@ -789,7 +789,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   menuButton: {
-    backgroundColor: '#3b82f6',
+    backgroundColor: '#584738', // Mahogany
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 12,
@@ -800,18 +800,18 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   restartButtonText: {
-    color: '#1e293b',
+    color: '#3D1F12', // Espresso
     fontSize: 16,
     fontWeight: 'bold',
   },
   menuButtonText: {
-    color: 'white',
+    color: '#F1EADA', // Milk color
     fontSize: 16,
     fontWeight: 'bold',
   },
   guessedContainer: {
     alignItems: 'center',
-    backgroundColor: '#1e293b',
+    backgroundColor: '#584738', // Mahogany
     padding: 16,
     borderRadius: 12,
     elevation: 2,
@@ -823,12 +823,12 @@ const styles = StyleSheet.create({
   guessedTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#94a3b8',
+    color: '#F1EADA', // Milk color
     marginBottom: 8,
   },
   guessedLetters: {
     fontSize: 14,
-    color: '#cbd5e1',
+    color: '#98755B', // Light brown
     textAlign: 'center',
     fontStyle: 'italic',
   },

@@ -27,9 +27,15 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-  const login = async (email, password) => {
+  const login = async (email, password, role = null) => {
     try {
       const userData = await UserService.loginUser(email, password);
+      
+      // If role is specified and doesn't match the user's actual role, throw error
+      if (role && userData.role !== role) {
+        throw new Error(`Invalid role. This account is a ${userData.role}, not ${role}`);
+      }
+      
       setUser(userData);
       await AsyncStorage.setItem('currentUser', JSON.stringify(userData));
       return { success: true, user: userData };

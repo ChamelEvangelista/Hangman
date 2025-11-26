@@ -15,10 +15,12 @@ class AsyncStorageDB {
       const users = await this.getItem('users');
       const words = await this.getItem('words');
       const scores = await this.getItem('scores');
+      const messages = await this.getItem('messages');
 
       if (!users) await this.setItem('users', []);
       if (!words) await this.setItem('words', []);
       if (!scores) await this.setItem('scores', []);
+      if (!messages) await this.setItem('messages', []);
 
       this.initialized = true;
       console.log('AsyncStorage DB initialized');
@@ -159,6 +161,12 @@ export const UserService = {
     return await db.findItem('users', user => user.email === email.toLowerCase());
   },
 
+  // Get user by ID
+  getUserById: async (id) => {
+    await db.init();
+    return await db.findItem('users', user => user.id === id);
+  },
+
   // Update user stats after game
   updateUserStats: async (userId, won = false, scoreToAdd = 0) => {
     await db.init();
@@ -282,6 +290,164 @@ export const ScoreService = {
   }
 };
 
+// Chat operations
+export const ChatService = {
+  // Send a message
+  sendMessage: async (senderId, receiverId, messageText) => {
+    await db.init();
+    
+    const message = await db.addItem('messages', {
+      senderId,
+      receiverId,
+      message: messageText,
+      timestamp: new Date().toISOString(),
+      read: false
+    });
+
+    return message;
+  },
+
+  // Get messages between two users
+  getMessages: async (userId1, userId2, limit = 100) => {
+    await db.init();
+    const messages = await db.getItem('messages') || [];
+    
+    const conversationMessages = messages
+      .filter(msg => 
+        (msg.senderId === userId1 && msg.receiverId === userId2) ||
+        (msg.senderId === userId2 && msg.receiverId === userId1)
+      )
+      .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+      .slice(-limit);
+
+    return conversationMessages;
+  },
+
+  // Mark messages as read
+  markMessagesAsRead: async (userId, otherUserId) => {
+    await db.init();
+    const messages = await db.getItem('messages') || [];
+    
+    let updated = false;
+    const updatedMessages = messages.map(msg => {
+      if (msg.senderId === otherUserId && msg.receiverId === userId && !msg.read) {
+        updated = true;
+        return { ...msg, read: true };
+      }
+      return msg;
+    });
+
+    if (updated) {
+      await db.setItem('messages', updatedMessages);
+    }
+    return true;
+  },
+
+  // Get unread message count for a user
+  getUnreadCount: async (userId) => {
+    await db.init();
+    const messages = await db.getItem('messages') || [];
+    
+    return messages.filter(msg => 
+      msg.receiverId === userId && !msg.read
+    ).length;
+  },
+
+  // Get unread count for specific conversation
+  getUnreadCountForUser: async (userId, otherUserId) => {
+    await db.init();
+    const messages = await db.getItem('messages') || [];
+    
+    return messages.filter(msg => 
+      msg.senderId === otherUserId && msg.receiverId === userId && !msg.read
+    ).length;
+  },
+
+  // Get chat list with last messages
+  getChatList: async (userId) => {
+    await db.init();
+    const messages = await db.getItem('messages') || [];
+    const users = await db.getItem('users') || [];
+    
+    // Get all unique users that the current user has chatted with
+    const chatPartners = new Set();
+    messages.forEach(msg => {
+      if (msg.senderId === userId) chatPartners.add(msg.receiverId);
+      if (msg.receiverId === userId) chatPartners.add(msg.senderId);
+    });
+
+    const chatList = await Promise.all(
+      Array.from(chatPartners).map(async (partnerId) => {
+        const partner = users.find(u => u.id === partnerId);
+        if (!partner) return null;
+
+        // Get last message with this user
+        const userMessages = messages
+          .filter(msg => 
+            (msg.senderId === userId && msg.receiverId === partnerId) ||
+            (msg.senderId === partnerId && msg.receiverId === userId)
+          )
+          .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+        const lastMessage = userMessages[0];
+        const unreadCount = await ChatService.getUnreadCountForUser(userId, partnerId);
+
+        return {
+          userId: partnerId,
+          userName: partner.username,
+          lastMessage: lastMessage?.message || 'No messages yet',
+          timestamp: lastMessage?.timestamp || new Date().toISOString(),
+          unreadCount
+        };
+      })
+    );
+
+    return chatList
+      .filter(chat => chat !== null)
+      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+  },
+
+  // Get recent conversations with all users (for chat list)
+  getRecentConversations: async (userId) => {
+    await db.init();
+    const users = await db.getItem('users') || [];
+    const messages = await db.getItem('messages') || [];
+    
+    const otherUsers = users.filter(user => user.id !== userId);
+    
+    const conversations = await Promise.all(
+      otherUsers.map(async (user) => {
+        const userMessages = await ChatService.getMessages(userId, user.id, 1);
+        const lastMessage = userMessages[userMessages.length - 1];
+        const unreadCount = await ChatService.getUnreadCountForUser(userId, user.id);
+
+        return {
+          userId: user.id,
+          userName: user.username,
+          lastMessage: lastMessage?.message || null,
+          timestamp: lastMessage?.timestamp || user.last_login,
+          unreadCount,
+          hasChatHistory: userMessages.length > 0
+        };
+      })
+    );
+
+    // Sort: users with messages first, then by last activity
+    return conversations.sort((a, b) => {
+      if (a.hasChatHistory && !b.hasChatHistory) return -1;
+      if (!a.hasChatHistory && b.hasChatHistory) return 1;
+      return new Date(b.timestamp) - new Date(a.timestamp);
+    });
+  },
+
+  // Clear all messages (for testing/debugging)
+  clearAllMessages: async () => {
+    await db.init();
+    await db.setItem('messages', []);
+    return true;
+  }
+};
+
 // Initialize with sample data
 export const initializeSampleData = async () => {
   await db.init();
@@ -327,6 +493,14 @@ export const initializeSampleData = async () => {
     role: 'admin'
   };
 
+  // Sample player user
+  const samplePlayer = {
+    email: 'player@example.com',
+    username: 'player1',
+    password: 'player123',
+    role: 'player'
+  };
+
   try {
     // Check if we already have words
     const existingWords = await WordService.getAllWords();
@@ -350,6 +524,37 @@ export const initializeSampleData = async () => {
         adminUser.role
       );
       console.log('Admin user created successfully');
+    }
+
+    // Check if sample player exists
+    const existingPlayer = await UserService.getUserByEmail(samplePlayer.email);
+    if (!existingPlayer) {
+      console.log('Creating sample player...');
+      await UserService.registerUser(
+        samplePlayer.email,
+        samplePlayer.username,
+        samplePlayer.password,
+        samplePlayer.role
+      );
+      console.log('Sample player created successfully');
+    }
+
+    // Initialize messages storage with some sample messages if empty
+    const existingMessages = await db.getItem('messages');
+    if (!existingMessages || existingMessages.length === 0) {
+      console.log('Initializing messages storage...');
+      await db.setItem('messages', []);
+      
+      // Add some sample messages between admin and sample player
+      const admin = await UserService.getUserByEmail(adminUser.email);
+      const player = await UserService.getUserByEmail(samplePlayer.email);
+      
+      if (admin && player) {
+        await ChatService.sendMessage(admin.id, player.id, "Welcome to Hangman Game!");
+        await ChatService.sendMessage(player.id, admin.id, "Thanks! Looking forward to playing.");
+        await ChatService.sendMessage(admin.id, player.id, "Let me know if you need any help with the game.");
+        console.log('Sample messages added');
+      }
     }
   } catch (error) {
     console.log('Error initializing sample data:', error);
